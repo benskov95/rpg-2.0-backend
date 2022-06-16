@@ -2,8 +2,6 @@ package entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
@@ -13,19 +11,24 @@ public class EquipmentItem implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String name;
     
     @OneToOne
-    private EquipmentItemType type;
+    private EquipmentItemType equipmentItemType;
     
-    private String name;
+    @OneToOne
+    private ItemQuality quality;
+    
+    @OneToOne
+    private ArmorType armorType;
+    
+    @OneToOne
+    private PlayerLevel levelRequirement;
+    
     private int armor = 0;
     private int stamina = 0;
 
-    private int strength = 0;
-    private int agility = 0;
-    private int intelligence = 0;
+    private int mainStat;
     
     private int criticalHit = 0;
     private int swiftness = 0;
@@ -43,24 +46,44 @@ public class EquipmentItem implements Serializable {
 
     public EquipmentItem() {}
 
-    public EquipmentItem(String name) {
+    public EquipmentItem(String name, EquipmentItemType eItemType, ItemQuality quality, ArmorType armorType, PlayerLevel lvlReq) {
         this.name = name;
+        this.equipmentItemType = eItemType;
+        this.quality = quality;
+        this.armorType = armorType;
+        this.levelRequirement = lvlReq;
     }
 
-    public Long getId() {
-        return id;
+    public EquipmentItemType getEquipmentItemType() {
+        return equipmentItemType;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEquipmentItemType(EquipmentItemType equipmentItemType) {
+        this.equipmentItemType = equipmentItemType;
     }
 
-    public EquipmentItemType getType() {
-        return type;
+    public ItemQuality getQuality() {
+        return quality;
     }
 
-    public void setType(EquipmentItemType type) {
-        this.type = type;
+    public void setQuality(ItemQuality quality) {
+        this.quality = quality;
+    }
+
+    public ArmorType getArmorType() {
+        return armorType;
+    }
+
+    public void setArmorType(ArmorType armorType) {
+        this.armorType = armorType;
+    }
+
+    public PlayerLevel getLevelRequirement() {
+        return levelRequirement;
+    }
+
+    public void setLevelRequirement(PlayerLevel levelRequirement) {
+        this.levelRequirement = levelRequirement;
     }
 
     public String getName() {
@@ -87,30 +110,14 @@ public class EquipmentItem implements Serializable {
         this.stamina = stamina;
     }
 
-    public int getStrength() {
-        return strength;
+    public int getMainStat() {
+        return mainStat;
     }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
+    public void setMainStat(int mainStat) {
+        this.mainStat = mainStat;
     }
-
-    public int getAgility() {
-        return agility;
-    }
-
-    public void setAgility(int agility) {
-        this.agility = agility;
-    }
-
-    public int getIntelligence() {
-        return intelligence;
-    }
-
-    public void setIntelligence(int intelligence) {
-        this.intelligence = intelligence;
-    }
-
+    
     public int getCriticalHit() {
         return criticalHit;
     }

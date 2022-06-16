@@ -2,6 +2,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,26 +15,15 @@ public class CharacterClass implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    
     private String className;
     
-    @OneToMany(mappedBy = "className")
+    @OneToMany(mappedBy = "charClass", cascade = CascadeType.PERSIST)
     private List<Ability> abilities;
 
     public CharacterClass() {}
 
     public CharacterClass(String className) {
         this.className = className;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getClassName() {

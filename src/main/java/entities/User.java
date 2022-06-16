@@ -33,14 +33,14 @@ public class User implements Serializable {
     @ManyToMany (cascade = CascadeType.PERSIST)
     private List<Role> roleList = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PlayerCharacter> characters;
 
     public User() {}
 
     public User(String username, String userPass) {
-      this.username = username;
-      this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
+        this.username = username;
+        this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
     }
 
     public List<String> getRolesAsStrings() {
@@ -60,32 +60,39 @@ public class User implements Serializable {
       }
 
     public String getUsername() {
-      return username;
+        return username;
     }
 
     public void setUsername(String userName) {
-      this.username = userName;
+        this.username = userName;
     }
 
     public String getUserPass() {
-      return this.userPass;
+        return this.userPass;
     }
 
     public void setUserPass(String userPass) {
-      this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
+        this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
     }
 
     public List<Role> getRoleList() {
-
-      return roleList;
+        return roleList;
     }
 
     public void setRoleList(List<Role> roleList) {
-      this.roleList = roleList;
+        this.roleList = roleList;
     }
 
     public void addRole(Role userRole) {
-      roleList.add(userRole);
+        roleList.add(userRole);
+    }
+
+    public List<PlayerCharacter> getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(List<PlayerCharacter> characters) {
+        this.characters = characters;
     }
 
 }
