@@ -5,19 +5,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class EMF_Creator {
-
-    /**
-     * Call this method before all integration tests that uses the Grizzly
-     * Server and the Test Database (in @BeforeAll ) Remember to call
-     * enRestTestWithDB() in @AfterAll
-     */
+    
     public static void startREST_TestWithDB() {
         System.setProperty("IS_INTEGRATION_TEST_WITH_DB", "testing");
     }
 
-    /*
-      Call this method in your @AfterAll method if startREST_TestWithDB() was previously called
-     */
     public static void endREST_TestWithDB() {
         System.clearProperty("IS_INTEGRATION_TEST_WITH_DB");
     }
@@ -35,7 +27,6 @@ public class EMF_Creator {
         
         boolean isDeployed = (System.getenv("DEPLOYED") != null);
         if (isDeployed) {
-            /* Strategy for deployment */
             System.out.println("USING ENVIRONMENT VARIABLES");
             System.out.println("DEPLOYED       -->" + System.getenv("DEPLOYED"));
             System.out.println("USER           -->" + System.getenv("USER"));
@@ -43,22 +34,18 @@ public class EMF_Creator {
             System.out.println("CONNECTION_STR -->" + System.getenv("CONNECTION_STR"));
             String user = System.getenv("USER");
             String pw = System.getenv("PW");
-            String connection_str = System.getenv("CONNECTION_STR_CA3"); // change this for your own project
+            String connection_str = System.getenv("CONNECTION_STR_CA3"); 
             Properties props = new Properties();
             props.setProperty("javax.persistence.jdbc.user", user);
             props.setProperty("javax.persistence.jdbc.password", pw);
             props.setProperty("javax.persistence.jdbc.url", connection_str);
             props.setProperty("javax.persistence.jdbc.driver", "com.mysql.cj.jdbc.Driver");
             
-            //Sets the production log-level to show only potential problems
             props.setProperty("eclipselink.logging.level","WARNING");
             props.setProperty("eclipselink.logging.level.sql","WARNING");
             return Persistence.createEntityManagerFactory("pu", props);
         }
 
-        /* Strategy for dev and test
-           Uses the two persistence units declared in persistence.xml
-         */
         String puName = isTest || System.getProperty("IS_INTEGRATION_TEST_WITH_DB") != null ? "puTest" : "pu"; //Only legal names
         if (puName.equals("puTest")) {
             System.out.println("Using the TEST database via persistence-unit --> puTest ");
@@ -70,11 +57,6 @@ public class EMF_Creator {
          emf =  Persistence.createEntityManagerFactory(puName, null);
        
         } catch (javax.persistence.PersistenceException ex){
-            System.out.println("##########################################################");
-            System.out.println("######      ERROR Creating a persistence Unit       ######");
-            System.out.println("###### Have you started the dev and test databases? ######");
-            System.out.println("######          (docker-compose up -d )             ######");
-            System.out.println("##########################################################");
             throw ex; 
         }
          return emf;
