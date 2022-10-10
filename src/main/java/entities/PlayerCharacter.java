@@ -1,11 +1,9 @@
 package entities;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -25,8 +23,8 @@ public class PlayerCharacter implements Serializable {
     @OneToOne
     private CharacterClass characterClass;
     
-    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
-    private Equipment equipment;
+    @OneToOne
+    private EquipmentSet equipment;
     
     @OneToOne
     private PlayerLevel playerLevel;
@@ -52,7 +50,7 @@ public class PlayerCharacter implements Serializable {
     
     public PlayerCharacter() {}
 
-    public PlayerCharacter(String characterName, User user, CharacterClass characterClass, Equipment equipment, PlayerLevel playerLevel, int totalXp) {
+    public PlayerCharacter(String characterName, User user, CharacterClass characterClass, EquipmentSet equipment, PlayerLevel playerLevel, int totalXp) {
         this.characterName = characterName;
         this.user = user;
         this.characterClass = characterClass;
@@ -64,23 +62,23 @@ public class PlayerCharacter implements Serializable {
     }
     
     private void calculateStats() {
-        equipment.getItemList().forEach(eItem -> {
-            this.armor += eItem.getArmor();
-            this.stamina += eItem.getStamina();
-            
-            this.mainStat += eItem.getMainStat();
-            
-            this.criticalHit += eItem.getCriticalHit();
-            this.swiftness += eItem.getSwiftness();
-            this.adaptability += eItem.getAdaptability();
-            
-            this.frostResistance += eItem.getFrostResistance();
-            this.fireResistance += eItem.getFireResistance();
-            this.shadowResistance += eItem.getShadowResistance();
-            this.lightningResistance += eItem.getLightningResistance();
-            this.holyResistance += eItem.getHolyResistance();
-            this.poisonResistance += eItem.getPoisonResistance();
-            this.bleedResistance += eItem.getBleedResistance();
+        equipment.getEquipmentSetAsList().forEach(eItem -> {
+            this.armor += eItem.getTemplate().getArmor() * eItem.getEnhancementLvl().getScalingValue();
+            this.stamina += eItem.getTemplate().getStamina() * eItem.getEnhancementLvl().getScalingValue();
+
+            this.mainStat += eItem.getTemplate().getMainStat() * eItem.getEnhancementLvl().getScalingValue();
+
+            this.criticalHit += eItem.getTemplate().getCriticalHit() * eItem.getEnhancementLvl().getScalingValue();
+            this.swiftness += eItem.getTemplate().getSwiftness() * eItem.getEnhancementLvl().getScalingValue();
+            this.adaptability += eItem.getTemplate().getAdaptability() * eItem.getEnhancementLvl().getScalingValue();
+
+            this.frostResistance += eItem.getTemplate().getFrostResistance() * eItem.getEnhancementLvl().getScalingValue();
+            this.fireResistance += eItem.getTemplate().getFireResistance() * eItem.getEnhancementLvl().getScalingValue();
+            this.shadowResistance += eItem.getTemplate().getShadowResistance() * eItem.getEnhancementLvl().getScalingValue();
+            this.lightningResistance += eItem.getTemplate().getLightningResistance() * eItem.getEnhancementLvl().getScalingValue();
+            this.holyResistance += eItem.getTemplate().getHolyResistance() * eItem.getEnhancementLvl().getScalingValue();
+            this.poisonResistance += eItem.getTemplate().getPoisonResistance() * eItem.getEnhancementLvl().getScalingValue();
+            this.bleedResistance += eItem.getTemplate().getBleedResistance() * eItem.getEnhancementLvl().getScalingValue();
         });
     }
 
@@ -108,11 +106,11 @@ public class PlayerCharacter implements Serializable {
         this.characterClass = characterClass;
     }
 
-    public Equipment getEquipment() {
+    public EquipmentSet getEquipment() {
         return equipment;
     }
 
-    public void setEquipment(Equipment equipment) {
+    public void setEquipment(EquipmentSet equipment) {
         this.equipment = equipment;
     }
 
