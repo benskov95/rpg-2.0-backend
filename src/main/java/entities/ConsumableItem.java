@@ -2,7 +2,6 @@
 package entities;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,29 +9,28 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class EquipmentItem implements Serializable {
-    
-    private static final long serialVersionUID = 1L;
+public class ConsumableItem implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
-    @ManyToOne()
+    @ManyToOne
     private PlayerCharacter owner;
     
-    @ManyToOne(cascade = CascadeType.ALL)
-    private EquipmentItemTemplate template;
-    
     @ManyToOne
-    private EnhancementLevel enhancementLvl;
+    private ConsumableItemTemplate template;
+    
+    private int quantity;
 
-    public EquipmentItem() {}
+    public ConsumableItem() {}
 
-    public EquipmentItem(EquipmentItemTemplate template, EnhancementLevel enhancementLvl) {
+    public ConsumableItem(ConsumableItemTemplate template, int quantity) {
         this.owner = owner;
         this.template = template;
-        this.enhancementLvl = enhancementLvl;
+        this.quantity = quantity;
     }
 
     public int getId() {
@@ -49,22 +47,22 @@ public class EquipmentItem implements Serializable {
 
     public void setOwner(PlayerCharacter owner) {
         this.owner = owner;
-    } 
-
-    public EquipmentItemTemplate getTemplate() {
+    }
+    
+    public ConsumableItemTemplate getTemplate() {
         return template;
     }
 
-    public void setTemplate(EquipmentItemTemplate template) {
+    public void setTemplate(ConsumableItemTemplate template) {
         this.template = template;
     }
 
-    public EnhancementLevel getEnhancementLvl() {
-        return enhancementLvl;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setEnhancementLvl(EnhancementLevel enhancementLvl) {
-        this.enhancementLvl = enhancementLvl;
-    }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }   
     
 }

@@ -4,10 +4,12 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -23,26 +25,47 @@ public class EquipmentSet implements Serializable {
     private PlayerCharacter character;
     
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem helmet;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem necklace;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem cloak;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem chest;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem bracers;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem gloves;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem belt;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem legs;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem boots;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem ring;
+    
     @OneToOne
+    @JoinColumn(nullable = true)
     private EquipmentItem weapon;
 
     public EquipmentSet() {}

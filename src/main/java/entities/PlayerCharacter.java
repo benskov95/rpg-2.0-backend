@@ -1,11 +1,14 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -23,13 +26,22 @@ public class PlayerCharacter implements Serializable {
     @OneToOne
     private CharacterClass characterClass;
     
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private EquipmentSet equipment;
     
     @OneToOne
     private PlayerLevel playerLevel;
     
-    private int totalXp;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    private List<EquipmentItem> equipmentInventory;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    private List<ConsumableItem> consumableInventory;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    private List<Currency> currencies;
+    
+    private int xpForNextLvl;
     
     private int armor = 0;
     private int stamina = 0;
@@ -50,13 +62,16 @@ public class PlayerCharacter implements Serializable {
     
     public PlayerCharacter() {}
 
-    public PlayerCharacter(String characterName, User user, CharacterClass characterClass, EquipmentSet equipment, PlayerLevel playerLevel, int totalXp) {
+    public PlayerCharacter(String characterName, User user, CharacterClass characterClass, EquipmentSet equipment, PlayerLevel playerLevel, int xpForNextLvl) {
         this.characterName = characterName;
         this.user = user;
         this.characterClass = characterClass;
         this.equipment = equipment;
         this.playerLevel = playerLevel;
-        this.totalXp = totalXp;
+        this.xpForNextLvl = xpForNextLvl;
+        this.equipmentInventory = new ArrayList();
+        this.consumableInventory = new ArrayList();
+        this.currencies = new ArrayList();
         
         calculateStats();
     }
@@ -122,12 +137,36 @@ public class PlayerCharacter implements Serializable {
         this.playerLevel = playerLevel;
     }
 
-    public int getTotalXp() {
-        return totalXp;
+    public List<EquipmentItem> getEquipmentInventory() {
+        return equipmentInventory;
     }
 
-    public void setTotalXp(int totalXp) {
-        this.totalXp = totalXp;
+    public void setEquipmentInventory(List<EquipmentItem> equipmentInventory) {
+        this.equipmentInventory = equipmentInventory;
+    }
+
+    public List<ConsumableItem> getConsumableInventory() {
+        return consumableInventory;
+    }
+
+    public void setConsumableInventory(List<ConsumableItem> consumableInventory) {
+        this.consumableInventory = consumableInventory;
+    }
+
+    public List<Currency> getCurrencies() {
+        return currencies;
+    }
+
+    public void setCurrencies(List<Currency> currencies) {
+        this.currencies = currencies;
+    }
+
+    public int getXpForNextLvl() {
+        return xpForNextLvl;
+    }
+
+    public void setXpForNextLvl(int xpForNextLvl) {
+        this.xpForNextLvl = xpForNextLvl;
     }
 
     public int getArmor() {
