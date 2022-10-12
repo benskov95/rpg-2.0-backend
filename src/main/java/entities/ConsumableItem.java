@@ -28,7 +28,6 @@ public class ConsumableItem implements Serializable {
     public ConsumableItem() {}
 
     public ConsumableItem(ConsumableItemTemplate template, int quantity) {
-        this.owner = owner;
         this.template = template;
         this.quantity = quantity;
     }

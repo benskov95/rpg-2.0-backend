@@ -30,7 +30,6 @@ public class EquipmentItem implements Serializable {
     public EquipmentItem() {}
 
     public EquipmentItem(EquipmentItemTemplate template, EnhancementLevel enhancementLvl) {
-        this.owner = owner;
         this.template = template;
         this.enhancementLvl = enhancementLvl;
     }

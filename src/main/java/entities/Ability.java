@@ -1,12 +1,11 @@
 package entities;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
 
 @Entity
 public class Ability implements Serializable {
@@ -14,11 +13,10 @@ public class Ability implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @Basic(optional = false)
-    @NotNull
     private String abilityId;
     
     @ManyToOne
+    @JoinColumn(nullable = true)
     private CharacterClass charClass;
     
     @OneToOne
@@ -29,11 +27,12 @@ public class Ability implements Serializable {
     private int maxDamage;
     private int dotDamage;
     private int dotDuration;
-    private int cooldownMs;
+    private int dotInterval;
+    private int cooldown;
     
     public Ability() {}
 
-    public Ability(String abilityId, CharacterClass charClass, PlayerLevel lvlReq, String abilityName, int minDamage, int maxDamage, int dotDamage, int dotDuration, int cooldownMs) {
+    public Ability(String abilityId, CharacterClass charClass, PlayerLevel lvlReq, String abilityName, int minDamage, int maxDamage, int dotDamage, int dotDuration, int dotInterval, int cooldownMs) {
         this.abilityId = abilityId;
         this.charClass = charClass;
         this.levelRequirement = lvlReq;
@@ -42,7 +41,8 @@ public class Ability implements Serializable {
         this.maxDamage = maxDamage;
         this.dotDamage = dotDamage;
         this.dotDuration = dotDuration;
-        this.cooldownMs = cooldownMs;
+        this.dotInterval = dotInterval;
+        this.cooldown = cooldownMs;
     }
 
     public String getAbilityId() {
@@ -108,13 +108,21 @@ public class Ability implements Serializable {
     public void setDotDuration(int dotDuration) {
         this.dotDuration = dotDuration;
     }
-    
-    public int getCooldownMs() {
-        return cooldownMs;
+
+    public int getDotInterval() {
+        return dotInterval;
     }
 
-    public void setCooldownMs(int cooldownMs) {
-        this.cooldownMs = cooldownMs;
+    public void setDotInterval(int dotInterval) {
+        this.dotInterval = dotInterval;
+    }
+    
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(int cooldownMs) {
+        this.cooldown = cooldownMs;
     }  
     
 }

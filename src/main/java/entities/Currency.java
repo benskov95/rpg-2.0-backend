@@ -29,7 +29,6 @@ public class Currency implements Serializable {
     public Currency() {}
 
     public Currency(CurrencyTemplate template, int quanitity) {
-        this.owner = owner;
         this.template = template;
         this.quanitity = quanitity;
     }    

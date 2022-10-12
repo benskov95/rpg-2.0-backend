@@ -1,6 +1,7 @@
 package entities;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
@@ -13,7 +14,7 @@ public class EquipmentItemTemplate implements Serializable {
     @Id
     private String name;
     
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private EquipmentItemType equipmentItemType;
     
     @OneToOne
