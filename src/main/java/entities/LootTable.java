@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 @Entity
 public class LootTable implements Serializable {
@@ -19,9 +18,6 @@ public class LootTable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
-    @OneToOne
-    private Enemy owner;
     
     @OneToMany
     private List<CurrencyTemplate> currencies = new ArrayList();
@@ -42,14 +38,6 @@ public class LootTable implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Enemy getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Enemy owner) {
-        this.owner = owner;
     }
 
     public List<CurrencyTemplate> getCurrencies() {

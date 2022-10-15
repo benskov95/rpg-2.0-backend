@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class EquipmentItemTemplate implements Serializable {
@@ -14,16 +14,16 @@ public class EquipmentItemTemplate implements Serializable {
     @Id
     private String name;
     
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST)
     private EquipmentItemType equipmentItemType;
     
-    @OneToOne
+    @OneToMany
     private ItemQuality quality;
     
-    @OneToOne
+    @OneToMany
     private ArmorType armorType;
     
-    @OneToOne
+    @OneToMany
     private PlayerLevel levelRequirement;
     
     private int armor = 0;

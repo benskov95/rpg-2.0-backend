@@ -23,13 +23,13 @@ public class PlayerCharacter implements Serializable {
     @ManyToOne
     private User user;
 
-    @OneToOne
+    @OneToMany
     private CharacterClass characterClass;
     
     @OneToOne(cascade = CascadeType.ALL)
     private EquipmentSet equipment;
     
-    @OneToOne
+    @OneToMany
     private PlayerLevel playerLevel;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
@@ -55,7 +55,8 @@ public class PlayerCharacter implements Serializable {
     private int frostResistance = 0;
     private int fireResistance = 0;
     private int shadowResistance = 0;
-    private int lightningResistance = 0;
+    private int magicResistance = 0;
+    private int natureResistance = 0;
     private int holyResistance = 0;
     private int poisonResistance = 0;
     private int bleedResistance = 0;
@@ -90,7 +91,7 @@ public class PlayerCharacter implements Serializable {
             this.frostResistance += eItem.getTemplate().getFrostResistance() * eItem.getEnhancementLvl().getScalingValue();
             this.fireResistance += eItem.getTemplate().getFireResistance() * eItem.getEnhancementLvl().getScalingValue();
             this.shadowResistance += eItem.getTemplate().getShadowResistance() * eItem.getEnhancementLvl().getScalingValue();
-            this.lightningResistance += eItem.getTemplate().getLightningResistance() * eItem.getEnhancementLvl().getScalingValue();
+            this.natureResistance += eItem.getTemplate().getLightningResistance() * eItem.getEnhancementLvl().getScalingValue();
             this.holyResistance += eItem.getTemplate().getHolyResistance() * eItem.getEnhancementLvl().getScalingValue();
             this.poisonResistance += eItem.getTemplate().getPoisonResistance() * eItem.getEnhancementLvl().getScalingValue();
             this.bleedResistance += eItem.getTemplate().getBleedResistance() * eItem.getEnhancementLvl().getScalingValue();
@@ -241,12 +242,20 @@ public class PlayerCharacter implements Serializable {
         this.shadowResistance = shadowResistance;
     }
 
-    public int getLightningResistance() {
-        return lightningResistance;
+    public int getMagicResistance() {
+        return magicResistance;
     }
 
-    public void setLightningResistance(int lightningResistance) {
-        this.lightningResistance = lightningResistance;
+    public void setMagicResistance(int magicResistance) {
+        this.magicResistance = magicResistance;
+    }
+
+    public int getNatureResistance() {
+        return natureResistance;
+    }
+
+    public void setNatureResistance(int lightningResistance) {
+        this.natureResistance = lightningResistance;
     }
 
     public int getHolyResistance() {

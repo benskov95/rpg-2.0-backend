@@ -11,7 +11,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 @Entity
 public class Enemy implements Serializable {
@@ -25,13 +24,13 @@ public class Enemy implements Serializable {
     private int armor;
     private int stamina;
     
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST)
     private EnemyType type;
     
     @OneToMany(cascade = CascadeType.ALL)
     private List<Ability> abilities;
     
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "owner")
+    @OneToMany(cascade = CascadeType.ALL)
     private LootTable lootTable;
 
     public Enemy() {}

@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Currency implements Serializable {
@@ -21,7 +21,7 @@ public class Currency implements Serializable {
     @ManyToOne
     private PlayerCharacter owner;
     
-    @OneToOne
+    @OneToMany
     private CurrencyTemplate template;
     
     private int quanitity;

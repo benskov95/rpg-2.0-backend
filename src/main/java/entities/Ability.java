@@ -1,11 +1,13 @@
 package entities;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Ability implements Serializable {
@@ -15,13 +17,18 @@ public class Ability implements Serializable {
     @Id
     private String abilityId;
     
+    // nullable so I can store enemy abilities in same table
     @ManyToOne
     @JoinColumn(nullable = true)
     private CharacterClass charClass;
     
-    @OneToOne
+    @OneToMany
     private PlayerLevel levelRequirement;
     
+    @OneToMany
+    @Column(nullable = true)
+    private DamageType dmgType;
+
     private String abilityName;
     private int minDamage;
     private int maxDamage;
@@ -32,10 +39,11 @@ public class Ability implements Serializable {
     
     public Ability() {}
 
-    public Ability(String abilityId, CharacterClass charClass, PlayerLevel lvlReq, String abilityName, int minDamage, int maxDamage, int dotDamage, int dotDuration, int dotInterval, int cooldownMs) {
+    public Ability(String abilityId, CharacterClass charClass, PlayerLevel lvlReq, DamageType dmgType, String abilityName, int minDamage, int maxDamage, int dotDamage, int dotDuration, int dotInterval, int cooldownMs) {
         this.abilityId = abilityId;
         this.charClass = charClass;
         this.levelRequirement = lvlReq;
+        this.dmgType = dmgType;
         this.abilityName = abilityName;
         this.minDamage = minDamage;
         this.maxDamage = maxDamage;
@@ -67,6 +75,14 @@ public class Ability implements Serializable {
 
     public void setLevelRequirement(PlayerLevel levelRequirement) {
         this.levelRequirement = levelRequirement;
+    }
+
+    public DamageType getDmgType() {
+        return dmgType;
+    }
+
+    public void setDmgType(DamageType dmgType) {
+        this.dmgType = dmgType;
     }
     
     public String getAbilityName() {
