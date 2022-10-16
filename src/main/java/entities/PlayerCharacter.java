@@ -23,23 +23,23 @@ public class PlayerCharacter implements Serializable {
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @OneToOne
     private CharacterClass characterClass;
     
     @OneToOne(cascade = CascadeType.ALL)
     private EquipmentSet equipment;
     
-    @OneToMany
+    @OneToOne
     private PlayerLevel playerLevel;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private List<EquipmentItem> equipmentInventory;
+    private List<EquipmentItem> equipmentInventory = new ArrayList();
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private List<ConsumableItem> consumableInventory;
+    private List<ConsumableItem> consumableInventory = new ArrayList();
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private List<Currency> currencies;
+    private List<Currency> currencies = new ArrayList();
     
     private int xpForNextLvl;
     
@@ -78,24 +78,33 @@ public class PlayerCharacter implements Serializable {
     }
     
     private void calculateStats() {
-        equipment.getEquipmentSetAsList().forEach(eItem -> {
-            this.armor += eItem.getTemplate().getArmor() * eItem.getEnhancementLvl().getScalingValue();
-            this.stamina += eItem.getTemplate().getStamina() * eItem.getEnhancementLvl().getScalingValue();
+        try {
+            equipment.getEquipmentSetAsList().forEach(eItem -> {
+                this.armor += eItem.getTemplate().getArmor() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.stamina += eItem.getTemplate().getStamina() * eItem.getEnhancementLvl().getScalingMultiplier();
 
-            this.mainStat += eItem.getTemplate().getMainStat() * eItem.getEnhancementLvl().getScalingValue();
+                this.mainStat += eItem.getTemplate().getMainStat() * eItem.getEnhancementLvl().getScalingMultiplier();
 
-            this.criticalHit += eItem.getTemplate().getCriticalHit() * eItem.getEnhancementLvl().getScalingValue();
-            this.swiftness += eItem.getTemplate().getSwiftness() * eItem.getEnhancementLvl().getScalingValue();
-            this.adaptability += eItem.getTemplate().getAdaptability() * eItem.getEnhancementLvl().getScalingValue();
+                this.criticalHit += eItem.getTemplate().getCriticalHit() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.swiftness += eItem.getTemplate().getSwiftness() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.adaptability += eItem.getTemplate().getAdaptability() * eItem.getEnhancementLvl().getScalingMultiplier();
 
-            this.frostResistance += eItem.getTemplate().getFrostResistance() * eItem.getEnhancementLvl().getScalingValue();
-            this.fireResistance += eItem.getTemplate().getFireResistance() * eItem.getEnhancementLvl().getScalingValue();
-            this.shadowResistance += eItem.getTemplate().getShadowResistance() * eItem.getEnhancementLvl().getScalingValue();
-            this.natureResistance += eItem.getTemplate().getLightningResistance() * eItem.getEnhancementLvl().getScalingValue();
-            this.holyResistance += eItem.getTemplate().getHolyResistance() * eItem.getEnhancementLvl().getScalingValue();
-            this.poisonResistance += eItem.getTemplate().getPoisonResistance() * eItem.getEnhancementLvl().getScalingValue();
-            this.bleedResistance += eItem.getTemplate().getBleedResistance() * eItem.getEnhancementLvl().getScalingValue();
-        });
+                this.frostResistance += eItem.getTemplate().getFrostResistance() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.fireResistance += eItem.getTemplate().getFireResistance() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.shadowResistance += eItem.getTemplate().getShadowResistance() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.natureResistance += eItem.getTemplate().getNatureResistance() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.holyResistance += eItem.getTemplate().getHolyResistance() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.poisonResistance += eItem.getTemplate().getPoisonResistance() * eItem.getEnhancementLvl().getScalingMultiplier();
+                this.bleedResistance += eItem.getTemplate().getBleedResistance() * eItem.getEnhancementLvl().getScalingMultiplier();
+            });             
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public double getCritChance() {
+        // every 20 points of crit is 1% crit chance.
+        return this.getCriticalHit() / 20; 
     }
 
     public String getCharacterName() {

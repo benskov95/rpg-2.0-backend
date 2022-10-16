@@ -1,13 +1,11 @@
 package entities;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Ability implements Serializable {
@@ -22,11 +20,11 @@ public class Ability implements Serializable {
     @JoinColumn(nullable = true)
     private CharacterClass charClass;
     
-    @OneToMany
+    @OneToOne
     private PlayerLevel levelRequirement;
     
-    @OneToMany
-    @Column(nullable = true)
+    @OneToOne
+    @JoinColumn(nullable = true)
     private DamageType dmgType;
 
     private String abilityName;

@@ -16,8 +16,7 @@ public class UserFacade {
     private static EntityManagerFactory emf;
     private static UserFacade instance;
 
-    private UserFacade() {
-    }
+    private UserFacade() {}
 
     public static UserFacade getUserFacade(EntityManagerFactory _emf) {
         if (instance == null) {

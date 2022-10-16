@@ -13,7 +13,7 @@ public class EnhancementLevel implements Serializable {
     @Id
     private int enhLvl;
     
-    private double scalingValue;
+    private double scalingMultiplier;
     private double chance;
 
     public EnhancementLevel() {}
@@ -27,13 +27,13 @@ public class EnhancementLevel implements Serializable {
     private void calcScaling() {
         switch(this.enhLvl) {
             case 0:
-                this.scalingValue = 1;
+                this.scalingMultiplier = 1;
                 break;
             case 1:
-                this.scalingValue = 1.25;
+                this.scalingMultiplier = 1.25;
                 break;
             default:
-                this.scalingValue = this.enhLvl * 0.75;
+                this.scalingMultiplier = this.enhLvl * 0.75;
                 break;
         }
     }
@@ -55,12 +55,12 @@ public class EnhancementLevel implements Serializable {
         this.enhLvl = level;
     }
 
-    public double getScalingValue() {
-        return scalingValue;
+    public double getScalingMultiplier() {
+        return scalingMultiplier;
     }
 
-    public void setScalingValue(double scalingValue) {
-        this.scalingValue = scalingValue;
+    public void setScalingMultiplier(double scalingValue) {
+        this.scalingMultiplier = scalingValue;
     }
 
     public double getChance() {

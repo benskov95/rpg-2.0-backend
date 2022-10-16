@@ -11,6 +11,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Enemy implements Serializable {
@@ -21,21 +22,36 @@ public class Enemy implements Serializable {
     private String name;
     
     private int lvl;
-    private int armor;
-    private int stamina;
+    private int armor = 0;
+    private int stamina = 0;
+
+    private int mainStat;
     
-    @OneToMany(cascade = CascadeType.PERSIST)
+    private int criticalHit = 0;
+    private int swiftness = 0;
+    private int adaptability = 0;
+    
+    private int frostResistance = 0;
+    private int fireResistance = 0;
+    private int shadowResistance = 0;
+    private int magicResistance = 0;
+    private int natureResistance = 0;
+    private int holyResistance = 0;
+    private int poisonResistance = 0;
+    private int bleedResistance = 0;
+    
+    @OneToOne(cascade = CascadeType.PERSIST)
     private EnemyType type;
     
     @OneToMany(cascade = CascadeType.ALL)
     private List<Ability> abilities;
     
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private LootTable lootTable;
 
     public Enemy() {}
 
-    public Enemy(String name, int lvl, int armor, int stamina, EnemyType type, List<Ability> abilities, LootTable lootTable) {
+    public Enemy(String name, int lvl, int armor, int stamina, int mainStat, EnemyType type, List<Ability> abilities, LootTable lootTable) {
         this.name = name;
         this.lvl = lvl;
         this.armor = armor;
@@ -98,6 +114,104 @@ public class Enemy implements Serializable {
     public void setStamina(int stamina) {
         this.stamina = stamina;
     }
+
+    public int getMainStat() {
+        return mainStat;
+    }
+
+    public void setMainStat(int mainStat) {
+        this.mainStat = mainStat;
+    }
+
+    public int getCriticalHit() {
+        return criticalHit;
+    }
+
+    public void setCriticalHit(int criticalHit) {
+        this.criticalHit = criticalHit;
+    }
+
+    public int getSwiftness() {
+        return swiftness;
+    }
+
+    public void setSwiftness(int swiftness) {
+        this.swiftness = swiftness;
+    }
+
+    public int getAdaptability() {
+        return adaptability;
+    }
+
+    public void setAdaptability(int adaptability) {
+        this.adaptability = adaptability;
+    }
+
+    public int getFrostResistance() {
+        return frostResistance;
+    }
+
+    public void setFrostResistance(int frostResistance) {
+        this.frostResistance = frostResistance;
+    }
+
+    public int getFireResistance() {
+        return fireResistance;
+    }
+
+    public void setFireResistance(int fireResistance) {
+        this.fireResistance = fireResistance;
+    }
+
+    public int getShadowResistance() {
+        return shadowResistance;
+    }
+
+    public void setShadowResistance(int shadowResistance) {
+        this.shadowResistance = shadowResistance;
+    }
+
+    public int getMagicResistance() {
+        return magicResistance;
+    }
+
+    public void setMagicResistance(int magicResistance) {
+        this.magicResistance = magicResistance;
+    }
+
+    public int getNatureResistance() {
+        return natureResistance;
+    }
+
+    public void setNatureResistance(int natureResistance) {
+        this.natureResistance = natureResistance;
+    }
+
+    public int getHolyResistance() {
+        return holyResistance;
+    }
+
+    public void setHolyResistance(int holyResistance) {
+        this.holyResistance = holyResistance;
+    }
+
+    public int getPoisonResistance() {
+        return poisonResistance;
+    }
+
+    public void setPoisonResistance(int poisonResistance) {
+        this.poisonResistance = poisonResistance;
+    }
+
+    public int getBleedResistance() {
+        return bleedResistance;
+    }
+
+    public void setBleedResistance(int bleedResistance) {
+        this.bleedResistance = bleedResistance;
+    }
+    
+    
 
     public EnemyType getType() {
         return type;

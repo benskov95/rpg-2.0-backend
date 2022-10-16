@@ -11,11 +11,15 @@ public class EquipmentItemType implements Serializable {
     
     @Id
     private String name;
+    
+    // for armor value calculation on equipment items
+    private int eqTypeMultiplier;
 
     public EquipmentItemType() {}
     
-    public EquipmentItemType(String name) {
+    public EquipmentItemType(String name, int eqTypeMultiplier) {
         this.name = name;
+        this.eqTypeMultiplier = eqTypeMultiplier;
     }
 
     public String getName() {
@@ -26,4 +30,12 @@ public class EquipmentItemType implements Serializable {
         this.name = name;
     }
 
+    public int getEqTypeMultiplier() {
+        return eqTypeMultiplier;
+    }
+
+    public void setEqTypeMultiplier(int eqTypeMultiplier) {
+        this.eqTypeMultiplier = eqTypeMultiplier;
+    }
+    
 }

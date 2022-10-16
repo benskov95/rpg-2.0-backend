@@ -5,6 +5,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class EquipmentItemTemplate implements Serializable {
@@ -14,19 +15,19 @@ public class EquipmentItemTemplate implements Serializable {
     @Id
     private String name;
     
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private EquipmentItemType equipmentItemType;
     
-    @OneToMany
+    @OneToOne
     private ItemQuality quality;
     
-    @OneToMany
+    @OneToOne
     private ArmorType armorType;
     
-    @OneToMany
+    @OneToOne
     private PlayerLevel levelRequirement;
     
-    private int armor = 0;
+    private int armor;
     private int stamina = 0;
 
     private int mainStat;
@@ -38,7 +39,7 @@ public class EquipmentItemTemplate implements Serializable {
     private int frostResistance = 0;
     private int fireResistance = 0;
     private int shadowResistance = 0;
-    private int lightningResistance = 0;
+    private int natureResistance = 0;
     private int holyResistance = 0;
     private int poisonResistance = 0;
     private int bleedResistance = 0;
@@ -53,6 +54,15 @@ public class EquipmentItemTemplate implements Serializable {
         this.quality = quality;
         this.armorType = armorType;
         this.levelRequirement = lvlReq;
+        
+        calculateStats();
+    }
+    
+    private void calculateStats() {
+        this.armor = this.quality.getQualityMultiplier()
+                * this.armorType.getArmorMultiplier() 
+                * this.equipmentItemType.getEqTypeMultiplier()
+                * this.levelRequirement.getPlayerLevel();
     }
 
     public EquipmentItemType getEquipmentItemType() {
@@ -167,12 +177,12 @@ public class EquipmentItemTemplate implements Serializable {
         this.shadowResistance = shadowResistance;
     }
 
-    public int getLightningResistance() {
-        return lightningResistance;
+    public int getNatureResistance() {
+        return natureResistance;
     }
 
-    public void setLightningResistance(int lightningResistance) {
-        this.lightningResistance = lightningResistance;
+    public void setNatureResistance(int lightningResistance) {
+        this.natureResistance = lightningResistance;
     }
 
     public int getHolyResistance() {

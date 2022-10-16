@@ -11,11 +11,15 @@ public class ItemQuality implements Serializable {
     
     @Id
     private String name;
+    
+    // for armor value calculation on equipment items
+    private int qualityMultiplier;
 
     public ItemQuality() {}
 
-    public ItemQuality(String name) {
+    public ItemQuality(String name, int qualityMultiplier) {
         this.name = name;
+        this.qualityMultiplier = qualityMultiplier;
     }
 
     public String getName() {
@@ -24,6 +28,14 @@ public class ItemQuality implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getQualityMultiplier() {
+        return qualityMultiplier;
+    }
+
+    public void setQualityMultiplier(int qualityMultiplier) {
+        this.qualityMultiplier = qualityMultiplier;
     }
 
 }
