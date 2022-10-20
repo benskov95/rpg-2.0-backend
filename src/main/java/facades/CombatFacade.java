@@ -1,10 +1,12 @@
 
 package facades;
 
+import dto.CombatDTO;
 import entities.Ability;
 import entities.DamageType;
 import entities.Enemy;
 import entities.PlayerCharacter;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 public class CombatFacade {
@@ -22,82 +24,54 @@ public class CombatFacade {
         return instance;
     }
     
-    public void calculatePlayerDamage(PlayerCharacter character, Enemy enemy, Ability ability) {
-        int min = (int) (ability.getMinDamage() * character.getMainStat() * 2.5);
-        int max = (int) (ability.getMaxDamage() * character.getMainStat() * 2.5);
+    public CombatDTO calculatePlayerDamage(CombatDTO combatDto) throws Exception {
+        EntityManager em = emf.createEntityManager();
         
-        int critRoll = (int) (Math.random() * 100 + 1);
-        boolean isCrit = critRoll <= character.getCritChance();
-        int dmgTotal = (int) (isCrit ? (Math.random() * max + min) * 2 : (Math.random() * max + min));
-        
-        int dmgFinal = calculateDamageReduction(dmgTotal, ability.getDmgType(), enemy);
+        try {
+            PlayerCharacter character = em.find(PlayerCharacter.class, combatDto.getPlayerCharId());
+            Enemy enemy = em.find(Enemy.class, combatDto.getEnemyId());
+            Ability ability = em.find(Ability.class, combatDto.getAbilityId());
+
+            int mainStat = character.getMainStat() >= 1 ? character.getMainStat() : 1;
+            int min = (int) (ability.getMinDamage() * (mainStat * 1.5));
+            int max = (int) (ability.getMaxDamage() * (mainStat * 1.5));
+
+            double critRoll = Math.random() * 100 + 1;
+            boolean isCrit = critRoll <= character.getCritChance();
+            int abilityDmg = (int) (isCrit ? (Math.random() * max + min) * 2 : (Math.random() * max + min));
+
+            int finalDmg = finalizeDamageCalculation(abilityDmg, ability.getDmgType(), enemy);
+            combatDto.setFinalDmg(finalDmg);
+            return combatDto;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new Exception("Damage calculation failed.");
+        }
+        finally {
+            em.close();
+        }
     }
     
-    public int calculateDamageReduction(double dmg, DamageType dmgType, Object target) {
-        PlayerCharacter character = null;
-        Enemy enemy = null;
-        int resistanceReductionVal = 10; // every 10 resistance points reduces damage of that type by 1%.
-        int armorReductionVal = 40;
+    private int finalizeDamageCalculation(int dmg, DamageType dmgType, Object target) {
+        int reductionVal = dmgType.getType().equals("Physical") ? 40 : 10; // 40 points per % of reduction for armor, 10 points for resistances.
         int res = 0;
         
         try {
-            character = (PlayerCharacter) target;
+            PlayerCharacter character = (PlayerCharacter) target;
+            int resistancePoints = character.getResistancePointsByDmgType(dmgType);
+            res = (int) dmg * ((100 - (resistancePoints / reductionVal)) / 100);
+            res *=  (100 - (character.getAdaptability() / 20)) / 100; // 1% all dmg reduction per 20 points of adaptability
+            res *= (100 + (character.getAdaptability() / 20)) / 100; // 1% dmg increase per 20 points of adaptability
         } catch (Exception e) {
             try {
-                enemy = (Enemy) target;
+                Enemy enemy = (Enemy) target;
+                int resistancePoints = enemy.getResistancePointsByDmgType(dmgType);
+                res = (int) dmg * ((100 - (resistancePoints / reductionVal)) / 100);
+                res *=  (100 - (enemy.getAdaptability() / 20)) / 100;
+                res *= (100 + (enemy.getAdaptability() / 20)) / 100;
             } catch (Exception ex) {
-                System.out.println("Provided target is neither PlayerCharacter nor Enemy");
+                System.out.println("Provided target type must be PlayerCharacter or Enemy.");
             }
-        }
-        
-        switch(dmgType.getType()) {
-            case "Physical":
-                res = (int) (character != null 
-                        ? dmg - (character.getArmor() / armorReductionVal)
-                        : dmg - (enemy.getArmor() / armorReductionVal));
-                return res;
-            case "Bleed":
-                res = (int) (character != null 
-                        ? dmg - (character.getBleedResistance() / resistanceReductionVal)
-                        : dmg - (enemy.getBleedResistance() / resistanceReductionVal));
-                return res;
-            case "Fire":
-                res = (int) (character != null 
-                        ? dmg - (character.getFireResistance() / resistanceReductionVal)
-                        : dmg - (enemy.getFireResistance() / resistanceReductionVal));
-                return res;
-            case "Frost":
-                res = (int) (character != null 
-                        ? dmg - (character.getFrostResistance() / resistanceReductionVal)
-                        : dmg - (enemy.getFrostResistance() / resistanceReductionVal));
-                return res;
-            case "Holy":
-                res = (int) (character != null 
-                        ? dmg - (character.getHolyResistance() / resistanceReductionVal)
-                        : dmg - (enemy.getHolyResistance() / resistanceReductionVal));
-                return res;
-            case "Magic":
-                res = (int) (character != null 
-                        ? dmg - (character.getMagicResistance() / resistanceReductionVal)
-                        : dmg - (enemy.getMagicResistance() / resistanceReductionVal));
-                return res;
-            case "Nature":
-                res = (int) (character != null 
-                        ? dmg - (character.getNatureResistance() / resistanceReductionVal)
-                        : dmg - (enemy.getNatureResistance() / resistanceReductionVal));
-                return res;
-            case "Poison":
-                res = (int) (character != null 
-                        ? dmg - (character.getPoisonResistance() / resistanceReductionVal)
-                        : dmg - (enemy.getPoisonResistance() / resistanceReductionVal));
-                return res;
-            case "Shadow":
-                res = (int) (character != null 
-                        ? dmg - (character.getShadowResistance() / resistanceReductionVal)
-                        : dmg - (enemy.getShadowResistance() / resistanceReductionVal));
-                return res;
-            default:
-                break;
         }
         
         return res;

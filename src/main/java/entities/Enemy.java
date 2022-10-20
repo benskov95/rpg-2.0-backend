@@ -3,6 +3,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -12,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class Enemy implements Serializable {
@@ -20,6 +22,15 @@ public class Enemy implements Serializable {
     
     @Id
     private String name;
+    
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private EnemyType type;
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Ability> abilities;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private LootTable lootTable;
     
     private int lvl;
     private int armor = 0;
@@ -40,15 +51,9 @@ public class Enemy implements Serializable {
     private int poisonResistance = 0;
     private int bleedResistance = 0;
     
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private EnemyType type;
+    @Transient
+    private HashMap<String, Integer> resistanceMap;
     
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Ability> abilities;
-    
-    @OneToOne(cascade = CascadeType.ALL)
-    private LootTable lootTable;
-
     public Enemy() {}
 
     public Enemy(String name, int lvl, int armor, int stamina, int mainStat, EnemyType type, List<Ability> abilities, LootTable lootTable) {
@@ -59,6 +64,24 @@ public class Enemy implements Serializable {
         this.type = type;
         this.abilities = abilities;
         this.lootTable = lootTable;
+    }
+    
+    private void fillResistanceMap() {
+        this.resistanceMap = new HashMap();
+        this.resistanceMap.put("Physical", this.armor);
+        this.resistanceMap.put("Bleed", this.bleedResistance);
+        this.resistanceMap.put("Fire", this.fireResistance);
+        this.resistanceMap.put("Frost", this.frostResistance);
+        this.resistanceMap.put("Holy", this.holyResistance);
+        this.resistanceMap.put("Magic", this.magicResistance);
+        this.resistanceMap.put("Nature", this.natureResistance);
+        this.resistanceMap.put("Poison", this.poisonResistance);
+        this.resistanceMap.put("Shadow", this.shadowResistance);
+    }
+    
+    public int getResistancePointsByDmgType(DamageType dmgType) {
+        fillResistanceMap();
+        return resistanceMap.get(dmgType.getType());
     }
     
 //    private List<Currency> generateCurrency(PlayerCharacter player) {

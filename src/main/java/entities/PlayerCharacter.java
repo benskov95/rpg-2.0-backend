@@ -2,6 +2,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class PlayerCharacter implements Serializable {
@@ -61,6 +63,9 @@ public class PlayerCharacter implements Serializable {
     private int poisonResistance = 0;
     private int bleedResistance = 0;
     
+    @Transient
+    private HashMap<String, Integer> resistanceMap;
+    
     public PlayerCharacter() {}
 
     public PlayerCharacter(String characterName, User user, CharacterClass characterClass, EquipmentSet equipment, PlayerLevel playerLevel, int xpForNextLvl) {
@@ -100,6 +105,24 @@ public class PlayerCharacter implements Serializable {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+    
+    private void fillResistanceMap() {
+        this.resistanceMap = new HashMap();
+        this.resistanceMap.put("Physical", this.armor);
+        this.resistanceMap.put("Bleed", this.bleedResistance);
+        this.resistanceMap.put("Fire", this.fireResistance);
+        this.resistanceMap.put("Frost", this.frostResistance);
+        this.resistanceMap.put("Holy", this.holyResistance);
+        this.resistanceMap.put("Magic", this.magicResistance);
+        this.resistanceMap.put("Nature", this.natureResistance);
+        this.resistanceMap.put("Poison", this.poisonResistance);
+        this.resistanceMap.put("Shadow", this.shadowResistance);
+    }
+    
+    public int getResistancePointsByDmgType(DamageType dmgType) {
+        fillResistanceMap();
+        return resistanceMap.get(dmgType.getType());
     }
     
     public double getCritChance() {

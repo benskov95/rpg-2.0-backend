@@ -17,19 +17,10 @@ import java.util.List;
 @Path("users")
 public class UserResource {
 
-
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
-            
-
-    @GET
-    @Path("count")
-    @Produces({MediaType.APPLICATION_JSON})
-    public String getNumberOfUsers() {
-        int numberOfUsers = USER_FACADE.getAllUsers().size();
-        return "{\"count\":" + numberOfUsers + "}";
-    }
+              
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
@@ -45,7 +36,6 @@ public class UserResource {
     public String getUsers() {
         List<UserDTO> dtoList = USER_FACADE.getAllUsers();
         return GSON.toJson(dtoList);
-
     }
 
     @DELETE
@@ -54,9 +44,7 @@ public class UserResource {
     @RolesAllowed("admin")
     public String deletePerson(@PathParam("userName") String userName) {
         UserDTO userDTO = USER_FACADE.deleteUser(userName);
-
         return GSON.toJson(userDTO);
     }
-
 
 }

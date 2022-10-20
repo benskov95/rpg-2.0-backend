@@ -10,13 +10,10 @@ public class UserDTO {
     private List<String> roles;
     private String password;
 
-
     public UserDTO(User user) {
         this.username = user.getUsername();
         this.roles = user.getRolesAsStrings();
     }
-
-    public UserDTO(){}
 
     public String getPassword() {
         return password;
