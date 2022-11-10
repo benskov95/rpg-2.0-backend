@@ -80,7 +80,9 @@ public class Enemy implements Serializable {
     }
     
     public int getResistancePointsByDmgType(DamageType dmgType) {
-        fillResistanceMap();
+        if (this.resistanceMap == null) {
+            fillResistanceMap();
+        }
         return resistanceMap.get(dmgType.getType());
     }
     

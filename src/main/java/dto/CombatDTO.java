@@ -1,14 +1,22 @@
 
 package dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CombatDTO {
     
     private String playerCharId;
     private String enemyId;
     private String abilityId;
     private int finalDmg;
+    private boolean isCrit;
+    private List<Integer> dotValues;
+    private int dotInterval;
 
-    public CombatDTO() {}
+    public CombatDTO() {
+        this.dotValues = new ArrayList();
+    }
 
     public String getPlayerCharId() {
         return playerCharId;
@@ -40,6 +48,30 @@ public class CombatDTO {
 
     public void setFinalDmg(int finalDmg) {
         this.finalDmg = finalDmg;
+    }
+
+    public boolean isIsCrit() {
+        return isCrit;
+    }
+
+    public void setIsCrit(boolean isCrit) {
+        this.isCrit = isCrit;
+    }
+
+    public List<Integer> getDotValues() {
+        return dotValues;
+    }
+
+    public void setDotValues(List<Integer> dotValues) {
+        this.dotValues = dotValues;
+    }
+
+    public int getDotInterval() {
+        return dotInterval;
+    }
+
+    public void setDotInterval(int dotInterval) {
+        this.dotInterval = dotInterval;
     }
     
 }
