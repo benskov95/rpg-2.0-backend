@@ -18,6 +18,11 @@ public class DamageType implements Serializable {
     public DamageType(String type) {
         this.type = type;
     }
+    
+    public int getReductionVal() {
+        // 40 points per % of reduction for armor, 10 points for resistances.
+        return type.equals("Physical") ? 40 : 10;
+    }
 
     public String getType() {
         return type;

@@ -48,7 +48,7 @@ public class PlayerCharacter implements Serializable {
     private int armor = 0;
     private int stamina = 0;
 
-    private int mainStat;
+    private int mainStat = 1;
     
     private int criticalHit = 0;
     private int swiftness = 0;
@@ -125,10 +125,6 @@ public class PlayerCharacter implements Serializable {
         return resistanceMap.get(dmgType.getType());
     }
     
-    public double getCritChance() {
-        // every 20 points of crit is 1% crit chance.
-        return this.getCriticalHit() / 20; 
-    }
 
     public String getCharacterName() {
         return characterName;
@@ -217,21 +213,34 @@ public class PlayerCharacter implements Serializable {
     public void setStamina(int stamina) {
         this.stamina = stamina;
     }
-
+    
     public int getMainStat() {
+        return (int) (mainStat * 1.2);
+    }
+
+    public int getRawMainStat() {
         return mainStat;
     }
 
-    public void setMainStat(int mainStat) {
+    public void setRawMainStat(int mainStat) {
         this.mainStat = mainStat;
     }
 
+    public double getCritChance() {
+        // every 20 points of crit is 1% crit chance.
+        return criticalHit / 20; 
+    }
+    
     public int getCriticalHit() {
         return criticalHit;
     }
 
     public void setCriticalHit(int criticalHit) {
         this.criticalHit = criticalHit;
+    }
+    
+    public int getSwiftnessPercentage() {
+        return swiftness / 30; // 1% cd (maybe cast time as well?) reduction per 30 points of swiftness.
     }
 
     public int getSwiftness() {
@@ -240,6 +249,14 @@ public class PlayerCharacter implements Serializable {
 
     public void setSwiftness(int swiftness) {
         this.swiftness = swiftness;
+    }
+    
+    public int getAdapIncrease() {
+        return adaptability / 20; // 1% dmg increase per 20 points of adaptability
+    }
+    
+    public int getAdapReduction() {
+        return adaptability / 30; // 1% all dmg reduction per 30 points of adaptability
     }
 
     public int getAdaptability() {

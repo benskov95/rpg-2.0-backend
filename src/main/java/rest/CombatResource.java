@@ -2,7 +2,7 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dto.CombatDTO;
+import dto.DamageEventDTO;
 import facades.CombatFacade;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -23,9 +23,9 @@ public class CombatResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String calculatePlayerDamage(String combatInfo) throws  AuthenticationException, Exception {
-        CombatDTO combatDto = GSON.fromJson(combatInfo, CombatDTO.class);
-        CombatDTO resDto = COMBAT_FACADE.calculatePlayerDamage(combatDto);
+    public String calculateDamage(String damageEvent) throws  AuthenticationException, Exception {
+        DamageEventDTO combatDto = GSON.fromJson(damageEvent, DamageEventDTO.class);
+        DamageEventDTO resDto = COMBAT_FACADE.calculateDamage(combatDto);
         return GSON.toJson(resDto);
     }
     

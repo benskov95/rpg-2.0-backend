@@ -1,7 +1,7 @@
 
 package facades;
 
-import dto.CombatDTO;
+import dto.DamageEventDTO;
 import entities.Ability;
 import entities.DamageType;
 import entities.Enemy;
@@ -24,29 +24,49 @@ public class CombatFacade {
         return instance;
     }
     
-    public CombatDTO calculatePlayerDamage(CombatDTO combatDto) throws Exception {
+    public DamageEventDTO calculateDamage(DamageEventDTO damageDto) throws Exception {
         EntityManager em = emf.createEntityManager();
         
         try {
-            PlayerCharacter character = em.find(PlayerCharacter.class, combatDto.getPlayerCharId());
-            Enemy enemy = em.find(Enemy.class, combatDto.getEnemyId());
-            Ability ability = em.find(Ability.class, combatDto.getAbilityId());
-
-            int mainStat = character.getMainStat() >= 1 ? character.getMainStat() : 1;
-            int min = (int) (ability.getMinDamage() * (mainStat * 1.2));
-            int max = (int) (ability.getMaxDamage() * (mainStat * 1.2));
+            PlayerCharacter character = em.find(PlayerCharacter.class, damageDto.getPlayerCharId());
+            Enemy enemy = em.find(Enemy.class, damageDto.getEnemyId());
+            Ability ability = em.find(Ability.class, damageDto.getAbilityId());
             
-            calculateDotDamage(ability, mainStat, character.getCritChance(), combatDto);
-
+            Object caster;
+            Object target;
+            int mainStat;
+            int min;
+            int max;
+            boolean isCrit;
+            double critChance;
             double critRoll = Math.random() * 100 + 1;
-            boolean isCrit = critRoll <= character.getCritChance();
+            
+            if (damageDto.getInitiatorType().equals("player")) { // maybe try excluding and using caster/target in dto instead (checking if caster is player or enemy etc. instead)
+                caster = character;
+                target = enemy;
+                mainStat = character.getMainStat();
+                min = (int) (ability.getMinDamage() * (mainStat));
+                max = (int) (ability.getMaxDamage() * (mainStat));
+                critChance = character.getCritChance();
+                isCrit = critRoll <= critChance;
+            } else {
+                caster = enemy;
+                target = character;
+                mainStat = enemy.getMainStat();
+                min = (int) (ability.getMinDamage() * mainStat);
+                max = (int) (ability.getMaxDamage() * mainStat);
+                critChance = enemy.getCritChance();
+                isCrit = critRoll <= critChance;
+            }
+
             int abilityDmg = (int) (Math.random() * max + min);
             abilityDmg = isCrit ? abilityDmg * 2 : abilityDmg;
 
-            int finalDmg = finalizeDamageCalculation(abilityDmg, ability.getDmgType(), enemy);
-            combatDto.setFinalDmg(finalDmg);
-            combatDto.setIsCrit(isCrit);
-            return combatDto;
+            int directDmg = finalizeDamageCalculation(abilityDmg, ability.getDmgType(), caster, target);
+            calculateDotDamage(ability, caster, target, mainStat, critChance, damageDto);
+            damageDto.setDirectDmg(directDmg);
+            damageDto.setIsCrit(isCrit);
+            return damageDto;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new Exception("Damage calculation failed.");
@@ -56,43 +76,46 @@ public class CombatFacade {
         }
     }
     
-    private void calculateDotDamage(Ability ability, int mainStat, double critChance, CombatDTO combatDto) {
+    private void calculateDotDamage(Ability ability, Object caster, Object target, int mainStat, double critChance, DamageEventDTO damageDto) {
         if (ability.getDotDamage() != 0) {
-            combatDto.setDotInterval(ability.getDotInterval());
+            damageDto.setDotInterval(ability.getDotInterval());
             int noOfTicks = ability.getDotDuration() / ability.getDotInterval();
+            
             for (int i = 0; i <= noOfTicks; i++) {
                 double critRoll = Math.random() * 100 + 1;
                 boolean isCrit = critRoll <= critChance;
-                int tickDmg = (int) (ability.getDotDamage() * (mainStat * 1.2));
-                tickDmg = isCrit ? tickDmg * 2 : tickDmg;
-                combatDto.getDotValues().add(tickDmg);
+                int tickDmg = (int) (ability.getDotDamage() * mainStat);
+                int finalTickDmg = finalizeDamageCalculation(tickDmg, ability.getDmgType(), caster, target);
+                finalTickDmg = isCrit ? finalTickDmg * 2 : finalTickDmg;
+                damageDto.getDotValues().add(finalTickDmg);
             }
         }
     }
     
-    private int finalizeDamageCalculation(int dmg, DamageType dmgType, Object target) {
-        int reductionVal = dmgType.getType().equals("Physical") ? 40 : 10; // 40 points per % of reduction for armor, 10 points for resistances.
-        double stepOne; // have to split the calculation of resistance reduction into two parts, otherwise value becomes 0. Not sure why.
+    private int finalizeDamageCalculation(int dmg, DamageType dmgType, Object caster, Object target) {
+        double stepOne; // have to split the calculation of resistance reduction into two parts, otherwise result value becomes 0. Not sure why.
         double stepTwo;
         int res = 0;
         
         try {
+            Enemy enemy = (Enemy) caster;
             PlayerCharacter character = (PlayerCharacter) target;
             int resistancePoints = character.getResistancePointsByDmgType(dmgType);
-            stepOne = resistancePoints / reductionVal;
+            stepOne = resistancePoints / dmgType.getReductionVal();
             stepTwo = (100 - stepOne) / 100;
             res = (int) (dmg * stepTwo);
-            res *=  (100 - (character.getAdaptability() / 30)) / 100; // 1% all dmg reduction per 30 points of adaptability
-            res *= (100 + (character.getAdaptability() / 20)) / 100; // 1% dmg increase per 20 points of adaptability
+            res *=  (100 - character.getAdapReduction()) / 100; // 1% all dmg reduction per 30 points of adaptability
+            res *= (100 + enemy.getAdapIncrease()) / 100; // 1% dmg increase per 20 points of adaptability
         } catch (Exception e) {
             try {
+                PlayerCharacter character = (PlayerCharacter) caster;
                 Enemy enemy = (Enemy) target;
                 int resistancePoints = enemy.getResistancePointsByDmgType(dmgType);
-                stepOne = resistancePoints / reductionVal;
+                stepOne = resistancePoints / dmgType.getReductionVal();
                 stepTwo = (100 - stepOne) / 100;
                 res = (int) (dmg * stepTwo);
-                res *=  (100 - (enemy.getAdaptability() / 30)) / 100;
-                res *= (100 + (enemy.getAdaptability() / 20)) / 100;
+                res *=  (100 - enemy.getAdapReduction()) / 100;
+                res *= (100 + character.getAdapIncrease()) / 100;
             } catch (Exception ex) {
                 System.out.println("Provided target type must be PlayerCharacter or Enemy.");
             }

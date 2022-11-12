@@ -36,7 +36,7 @@ public class Enemy implements Serializable {
     private int armor = 0;
     private int stamina = 0;
 
-    private int mainStat;
+    private int mainStat = 1;
     
     private int criticalHit = 0;
     private int swiftness = 0;
@@ -141,11 +141,20 @@ public class Enemy implements Serializable {
     }
 
     public int getMainStat() {
+        return (int) (mainStat * 1.2);
+    }
+
+    public int getRawMainStat() {
         return mainStat;
     }
 
-    public void setMainStat(int mainStat) {
+    public void setRawMainStat(int mainStat) {
         this.mainStat = mainStat;
+    }
+    
+    public double getCritChance() {
+        // every 20 points of crit is 1% crit chance.
+        return criticalHit / 20; 
     }
 
     public int getCriticalHit() {
@@ -155,6 +164,10 @@ public class Enemy implements Serializable {
     public void setCriticalHit(int criticalHit) {
         this.criticalHit = criticalHit;
     }
+    
+    public int getSwiftnessPercentage() {
+        return swiftness / 30; // 1% cd (maybe cast time as well?) reduction per 30 points of swiftness.
+    }
 
     public int getSwiftness() {
         return swiftness;
@@ -162,6 +175,14 @@ public class Enemy implements Serializable {
 
     public void setSwiftness(int swiftness) {
         this.swiftness = swiftness;
+    }
+    
+    public int getAdapIncrease() {
+        return adaptability / 20; // 1% dmg increase per 20 points of adaptability
+    }
+    
+    public int getAdapReduction() {
+        return adaptability / 30; // 1% all dmg reduction per 30 points of adaptability
     }
 
     public int getAdaptability() {

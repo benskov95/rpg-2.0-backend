@@ -4,18 +4,27 @@ package dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CombatDTO {
+public class DamageEventDTO {
     
+    private String initiatorType;
     private String playerCharId;
     private String enemyId;
     private String abilityId;
-    private int finalDmg;
+    private int directDmg;
     private boolean isCrit;
     private List<Integer> dotValues;
     private int dotInterval;
 
-    public CombatDTO() {
+    public DamageEventDTO() {
         this.dotValues = new ArrayList();
+    }
+
+    public String getInitiatorType() {
+        return initiatorType;
+    }
+
+    public void setInitiatorType(String initiatorType) {
+        this.initiatorType = initiatorType;
     }
 
     public String getPlayerCharId() {
@@ -42,12 +51,12 @@ public class CombatDTO {
         this.abilityId = abilityId;
     }
 
-    public int getFinalDmg() {
-        return finalDmg;
+    public int getDirectDmg() {
+        return directDmg;
     }
 
-    public void setFinalDmg(int finalDmg) {
-        this.finalDmg = finalDmg;
+    public void setDirectDmg(int finalDmg) {
+        this.directDmg = finalDmg;
     }
 
     public boolean isIsCrit() {
