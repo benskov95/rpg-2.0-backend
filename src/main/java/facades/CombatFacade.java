@@ -24,7 +24,7 @@ public class CombatFacade {
         return instance;
     }
     
-    public DamageEventDTO calculateDamage(DamageEventDTO damageDto) throws Exception { // CHANGE BRANCH
+    public DamageEventDTO calculateDamage(DamageEventDTO damageDto) throws Exception { 
         EntityManager em = emf.createEntityManager();
         
         try {
