@@ -24,7 +24,7 @@ public class CombatFacade {
         return instance;
     }
     
-    public DamageEventDTO calculateDamage(DamageEventDTO damageDto) throws Exception {
+    public DamageEventDTO calculateDamage(DamageEventDTO damageDto) throws Exception { // CHANGE BRANCH
         EntityManager em = emf.createEntityManager();
         
         try {
@@ -41,22 +41,27 @@ public class CombatFacade {
             double critChance;
             double critRoll = Math.random() * 100 + 1;
             
-            if (damageDto.getInitiatorType().equals("player")) { // maybe try excluding and using caster/target in dto instead (checking if caster is player or enemy etc. instead)
-                caster = character;
-                target = enemy;
-                mainStat = character.getMainStat();
-                min = (int) (ability.getMinDamage() * (mainStat));
-                max = (int) (ability.getMaxDamage() * (mainStat));
-                critChance = character.getCritChance();
-                isCrit = critRoll <= critChance;
-            } else {
-                caster = enemy;
-                target = character;
-                mainStat = enemy.getMainStat();
-                min = (int) (ability.getMinDamage() * mainStat);
-                max = (int) (ability.getMaxDamage() * mainStat);
-                critChance = enemy.getCritChance();
-                isCrit = critRoll <= critChance;
+            switch(damageDto.getInitiatorType()) {
+                case "player":
+                    caster = character;
+                    target = enemy;
+                    mainStat = character.getMainStat();
+                    min = (int) (ability.getMinDamage() * (mainStat));
+                    max = (int) (ability.getMaxDamage() * (mainStat));
+                    critChance = character.getCritChance();
+                    isCrit = critRoll <= critChance;
+                    break;
+                case "enemy":
+                    caster = enemy;
+                    target = character;
+                    mainStat = enemy.getMainStat();
+                    min = (int) (ability.getMinDamage() * mainStat);
+                    max = (int) (ability.getMaxDamage() * mainStat);
+                    critChance = enemy.getCritChance();
+                    isCrit = critRoll <= critChance;
+                    break;
+                default:
+                    throw new Exception("Incorrect initiator type provided.");
             }
 
             int abilityDmg = (int) (Math.random() * max + min);
