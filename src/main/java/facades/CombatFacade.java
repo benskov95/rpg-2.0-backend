@@ -109,8 +109,8 @@ public class CombatFacade {
             stepOne = resistancePoints / dmgType.getReductionVal();
             stepTwo = (100 - stepOne) / 100;
             res = (int) (dmg * stepTwo);
-            res *=  (100 - character.getAdapReduction()) / 100; // 1% all dmg reduction per 30 points of adaptability
-            res *= (100 + enemy.getAdapIncrease()) / 100; // 1% dmg increase per 20 points of adaptability
+            res *=  (100 - character.getAdapReduction()) / 100; 
+            res *= (100 + enemy.getAdapIncrease()) / 100; 
         } catch (Exception e) {
             try {
                 PlayerCharacter character = (PlayerCharacter) caster;
